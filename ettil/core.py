@@ -18,6 +18,11 @@ def get(page):
     r.raise_for_status()
     data = r.json()
 
+    # Ensure that the parsed timestamp is an integer so that it can be passed
+    # to ettil.write later if desired.
+    if data['timestamp'] is None:
+        data['timestamp'] = 0
+
     return PageData(
         title=page,
         timestamp=data['timestamp'],
@@ -53,3 +58,5 @@ def write(page, content, conflict=None):
     responce = r.json()
     if responce["status"] == "error" and not ignoreconflict:
         raise ConflictError
+
+    return responce["timestamp"]
