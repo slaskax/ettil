@@ -2,7 +2,7 @@
 ettil is a simple library that makes it a lot easier to interface with Tikolu's [Edit the Text](https://tikolu.net/edit/).
 
 ## How do I update/install it?
-I will be trying to get this on [PyPI](https://pypi.org/]) soon, but for now:
+I will be trying to get this on [PyPI](https://pypi.org/) soon, but for now:
 - Obtain the source by either:
   - Downloading it via the green **Code** button and and extracting it, *OR*
   - Running `git clone https://github.com/tlras/ettil`.
