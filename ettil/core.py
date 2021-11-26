@@ -1,5 +1,7 @@
+from .exceptions import ConflictError
 import collections
 import requests
+import json
 
 # I could just return the ETT API data directly, but this ensures that if the
 # ETT API ever changes, the output of these functions will stay the same.
@@ -31,5 +33,23 @@ def get_raw(page):
     return r.text
 
 
-# def write(page, content, conflict=False):
-#     pass
+def write(page, content, conflict=None):
+    # The ETT API has issues if you provide the data out of order.
+    # I have no idea why this is the case, but it's dealt with here.
+    ignoreconflict = conflict is None
+    timestamp = "0" if ignoreconflict else str(conflict)
+
+    payload = json.dumps(collections.OrderedDict(
+        title=page,
+        content=content,
+        timestamp=timestamp,
+        ignoreconflict=ignoreconflict
+    ), separators=(',', ':'))
+
+    r = requests.post('https://tikolu.net/edit/.index.php', data=payload)
+    r.raise_for_status()
+
+    # FIXME: Add handling for errors other than conflict.
+    responce = r.json()
+    if responce["status"] == "error" and not ignoreconflict:
+        raise ConflictError
