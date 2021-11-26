@@ -7,6 +7,6 @@ class WriteError(Exception):
 class ConflictError(WriteError):
     def __init__(self):
         super().__init__(
-            "conflict",
-            "This page has been edited since you last read its content."
+            'conflict',
+            'This page has been edited since you last read its content.'
         )

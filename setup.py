@@ -20,7 +20,7 @@ setup(
     packages=find_packages(include=['ettil']),
     python_requires='>=3.6',
     install_requires=[
-        "requests"
+        'requests'
     ],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha'

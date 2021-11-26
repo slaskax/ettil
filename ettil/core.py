@@ -42,7 +42,7 @@ def write(page, content, conflict=None):
     # The ETT API has issues if you provide the data out of order.
     # I have no idea why this is the case, but it's dealt with here.
     ignoreconflict = conflict is None
-    timestamp = "0" if ignoreconflict else str(conflict)
+    timestamp = '0' if ignoreconflict else str(conflict)
 
     payload = json.dumps(collections.OrderedDict(
         title=page,
@@ -55,10 +55,10 @@ def write(page, content, conflict=None):
     r.raise_for_status()
 
     responce = r.json()
-    if responce["status"] == "error":
-        if responce.cause == "confilct":
+    if responce['status'] == 'error':
+        if responce['cause'] == 'confilct':
             raise ConflictError
         else:
-            raise WriteError(responce["cause"], responce["message"])
+            raise WriteError(responce['cause'], responce['message'])
 
-    return responce["timestamp"]
+    return responce['timestamp']
