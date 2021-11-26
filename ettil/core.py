@@ -59,6 +59,6 @@ def write(page, content, conflict=None):
         if responce["cause"] == "confilct":
             raise ConflictError
         else:
-            raise WriteError(responce.cause, responce.message)
+            raise WriteError(responce["cause"], responce["message"])
 
     return responce["timestamp"]
