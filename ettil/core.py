@@ -1,25 +1,37 @@
-from .exceptions import ConflictError, UnmodifiedError, WriteError  # noqa
+'''The page reading/writing functions.'''
 import collections
-import requests
 import json
+import requests
+from .exceptions import ConflictError, UnmodifiedError, WriteError  # noqa
 
 # I could just return the ETT API data directly, but this ensures that if the
 # ETT API ever changes, the output of these functions will stay the same.
 PageData = collections.namedtuple('PageData', [
+    # title is simply the name of the page. There is no leading '/'!
     'title',
+
+    # timestamp holds the Unix epoch time of when the page was last edited.
+    # This value will *always* be an integer, even on never-modified pages.
     'timestamp',
+
+    # ip holds the IP address of the last person to edit the page as a string.
+    # On a page that has never been editted, this will be set to None.
     'ip',
+
+    # content holds the text that is on the requested page.
     'content'
 ])
 
 
 def get(page):
-    r = requests.get(f'https://tikolu.net/edit/.api/{page}')
-    r.raise_for_status()
-    data = r.json()
+    '''
+    Retreives the content and metadata of a page and then returns it as a
+    PageData named tuple. Find more information at PageData's definition.
+    '''
+    resp = requests.get(f'https://tikolu.net/edit/.api/{page}')
+    resp.raise_for_status()
+    data = resp.json()
 
-    # Ensure that the parsed timestamp is an integer so that it can be passed
-    # to ettil.write later if desired.
     if data['timestamp'] is None:
         data['timestamp'] = 0
 
@@ -32,13 +44,24 @@ def get(page):
 
 
 def get_raw(page):
-    r = requests.get(f'https://tikolu.net/edit/.text/{page}')
-    r.raise_for_status()
+    '''
+    Retreives *only* the text on a page without its metadata.
+    This is slightly faster than ettil.get and uses less bandwidth.
+    '''
+    resp = requests.get(f'https://tikolu.net/edit/.text/{page}')
+    resp.raise_for_status()
 
-    return r.text
+    return resp.text
 
 
 def write(page, content, conflict=None):
+    '''
+    Writes the provided content to the provided page.
+
+    The conflict variable can optionally be set to the timestamp at which the
+    page was last  retrieved. If it is, write will throw a ConflictError if
+    the page has been updated since then to avoid overwriting those changes.
+    '''
     # The ETT API has issues if you provide the data out of order.
     # I have no idea why this is the case, but it's dealt with here.
     ignoreconflict = conflict is None
@@ -51,16 +74,15 @@ def write(page, content, conflict=None):
         ignoreconflict=ignoreconflict
     ), separators=(',', ':'))
 
-    r = requests.post('https://tikolu.net/edit/.index.php', data=payload)
-    r.raise_for_status()
+    resp = requests.post('https://tikolu.net/edit/.index.php', data=payload)
+    resp.raise_for_status()
 
-    responce = r.json()
-    if responce['status'] == 'error':
-        if responce['cause'] == 'conflict':
+    data = resp.json()
+    if data['status'] == 'error':
+        if data['cause'] == 'conflict':
             raise ConflictError
-        elif responce['cause'] == 'unmodified':
+        if data['cause'] == 'unmodified':
             raise UnmodifiedError
-        else:
-            raise WriteError(responce['cause'], responce['message'])
+        raise WriteError(data['cause'], data['message'])
 
-    return responce['timestamp']
+    return data['timestamp']
