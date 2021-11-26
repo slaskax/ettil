@@ -56,7 +56,7 @@ def write(page, content, conflict=None):
 
     responce = r.json()
     if responce["status"] == "error":
-        if responce["cause"] == "confilct":
+        if responce.cause == "confilct":
             raise ConflictError
         else:
             raise WriteError(responce["cause"], responce["message"])
