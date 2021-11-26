@@ -1,4 +1,10 @@
-from .core import get, get_raw, write
+from .core import get, get_raw, write  # noqa
+
+# 		▄▄▀█▄───▄───────▄
+# 		▀▀▀██──███─────███
+# 		░▄██▀░█████░░░█████░░
+# 		███▀▄███░███░███░███░▄
+# 		▀█████▀░░░▀███▀░░░▀██▀
 
 __author__ = 'tlras'
 __description__ = 'Edit the Text Interface Library'
