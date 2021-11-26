@@ -10,3 +10,10 @@ class ConflictError(WriteError):
             'conflict',
             'This page has been edited since you last read its content.'
         )
+
+class UnmodifiedError(WriteError):
+    def __init__(self):
+        super().__init__(
+            'unmodified',
+            'The page was not saved due to no changes being made.'
+        )

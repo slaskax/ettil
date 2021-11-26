@@ -1,4 +1,4 @@
-from .exceptions import ConflictError, WriteError
+from .exceptions import ConflictError, UnmodifiedError, WriteError  # noqa
 import collections
 import requests
 import json
@@ -56,8 +56,10 @@ def write(page, content, conflict=None):
 
     responce = r.json()
     if responce['status'] == 'error':
-        if responce['cause'] == 'confilct':
+        if responce['cause'] == 'conflict':
             raise ConflictError
+        elif responce['cause'] == 'unmodified':
+            raise UnmodifiedError
         else:
             raise WriteError(responce['cause'], responce['message'])
 
