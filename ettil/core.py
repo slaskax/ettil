@@ -1,4 +1,4 @@
-from .exceptions import ConflictError
+from .exceptions import ConflictError, WriteError
 import collections
 import requests
 import json
@@ -54,9 +54,11 @@ def write(page, content, conflict=None):
     r = requests.post('https://tikolu.net/edit/.index.php', data=payload)
     r.raise_for_status()
 
-    # FIXME: Add handling for errors other than conflict.
     responce = r.json()
-    if responce["status"] == "error" and not ignoreconflict:
-        raise ConflictError
+    if responce["status"] == "error":
+        if responce.cause == "confilct":
+            raise ConflictError
+        else:
+            raise WriteError(responce.cause, responce.message)
 
     return responce["timestamp"]

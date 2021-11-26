@@ -1,5 +1,5 @@
 from .core import get, get_raw, write  # noqa
-from .exceptions import ConflictError  # noqa
+from .exceptions import ConflictError, WriteError  # noqa
 
 # 		▄▄▀█▄───▄───────▄
 # 		▀▀▀██──███─────███
