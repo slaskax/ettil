@@ -25,7 +25,7 @@ PageData = collections.namedtuple('PageData', [
 
 def get(page):
     '''
-    Retreives the content and metadata of a page and then returns it as a
+    Retrieves the content and metadata of a page and then returns it as a
     PageData named tuple. Find more information at PageData's definition.
     '''
     resp = requests.get(f'https://tikolu.net/edit/.api/{page}')
@@ -45,7 +45,7 @@ def get(page):
 
 def get_raw(page):
     '''
-    Retreives *only* the text on a page without its metadata.
+    Retrieves *only* the text on a page without its metadata.
     This is slightly faster than ettil.get and uses less bandwidth.
     '''
     resp = requests.get(f'https://tikolu.net/edit/.text/{page}')
