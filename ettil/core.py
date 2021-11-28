@@ -10,7 +10,7 @@ PageData = collections.namedtuple('PageData', [
     # title is simply the name of the page. There is no leading '/'!
     'title',
 
-    # timestamp holds the Unix epoch time of when the page was last edited.
+    # timestamp holds the Unix Epoch time of when the page was last edited.
     # This value will *always* be an integer, even on never-modified pages.
     'timestamp',
 
@@ -26,7 +26,7 @@ PageData = collections.namedtuple('PageData', [
 def get(page):
     '''
     Retrieves the content and metadata of a page and then returns it as a
-    PageData named tuple. Find more information at PageData's definition.
+    PageData namedtuple. Find more information at PageData's definition.
     '''
     resp = requests.get(f'https://tikolu.net/edit/.api/{page}')
     resp.raise_for_status()
@@ -46,7 +46,7 @@ def get(page):
 def get_raw(page):
     '''
     Retrieves *only* the text on a page without its metadata.
-    This is slightly faster than ettil.get and uses less bandwidth.
+    This is slightly faster than get() and uses less bandwidth.
     '''
     resp = requests.get(f'https://tikolu.net/edit/.text/{page}')
     resp.raise_for_status()
@@ -59,7 +59,7 @@ def write(page, content, conflict=None):
     Writes the provided content to the provided page.
 
     The conflict variable can optionally be set to the timestamp at which the
-    page was last  retrieved. If it is, write will throw a ConflictError if
+    page was last retrieved. If it is, write will throw a ConflictError if
     the page has been updated since then to avoid overwriting those changes.
     '''
     # The ETT API has issues if you provide the data out of order.
